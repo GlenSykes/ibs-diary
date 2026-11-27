@@ -36,7 +36,9 @@ licensed and must not be copied in.
 
 Stored only on the phone, in IndexedDB. The Data tab gives:
 
-- **Backup** (JSON): everything, including deletions. Restorable.
+- **Backup** (JSON): everything, including deletions. Restorable. Shared
+  backups are the same JSON with a `.txt` name, because Chrome on Android will
+  not share a `.json` file ("Permission denied"); downloads stay `.json`.
 - **CSV export** for analysis, in "long" format: one row per food eaten (recipes
   expanded into ingredients, with FODMAP tags) and one row per rating.
 - **Restore**: merges a backup in; newest version of each record wins.

@@ -160,13 +160,21 @@ export function downloadFile(name, text, type) {
 }
 
 /** Open the phone's share sheet. Returns true if shared, false if cancelled. */
+// If the phone will not share this file, it is downloaded instead, so the tap
+// never ends with nothing saved. Returns true once the file is shared or saved.
 export async function shareFile(name, text, type) {
   const file = new File([text], name, { type });
+  const fallback = (why) => {
+    downloadFile(name, text, type);
+    toast(`${why}, so it was saved to Downloads instead`);
+    return true;
+  };
   try {
+    if (navigator.canShare && !navigator.canShare({ files: [file] })) return fallback('This phone could not share that file');
     await navigator.share({ files: [file], title: name });
     return true;
   } catch (e) {
-    if (e.name !== 'AbortError') toast('Sharing failed: ' + e.message);
-    return false;
+    if (e.name === 'AbortError') return false; // you closed the share sheet
+    return fallback('Sharing failed');
   }
 }

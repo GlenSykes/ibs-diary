@@ -4,7 +4,7 @@ import { h, toast, downloadFile, shareFile, canShareFiles, toLocalInput } from '
 import { FODMAP_TAGS, OTHER_TAGS } from './data.js';
 import * as db from './db.js';
 
-export const APP_VERSION = '1.2.1';
+export const APP_VERSION = '1.2.2';
 const FODMAP_KEYS = new Set(FODMAP_TAGS.map((t) => t.key));
 const OTHER_KEYS = new Set(OTHER_TAGS.map((t) => t.key));
 const today = () => toLocalInput(Date.now()).slice(0, 10);
@@ -96,11 +96,15 @@ export async function dataView() {
   );
 
   const backupName = () => `ibs-diary-backup-${today()}.json`;
+  // Chrome on Android only shares an allow-list of file types, and JSON is not
+  // on it: sharing a .json fails with "Permission denied". So a SHARED backup
+  // is the same JSON in a .txt file; restore accepts either.
+  const sharedBackupName = () => `ibs-diary-backup-${today()}.txt`;
   const csvName = () => `ibs-diary-${today()}.csv`;
 
   const fileInput = h('input', {
     type: 'file',
-    accept: '.json,application/json',
+    accept: '.json,.txt,application/json,text/plain',
     class: 'visually-hidden',
     onchange: async () => {
       const file = fileInput.files[0];
@@ -130,7 +134,7 @@ export async function dataView() {
     status,
 
     h('h2', {}, 'Back up'),
-    h('p', { class: 'hint' }, 'A complete copy you can restore from. Save it to Google Drive or email it to yourself.'),
+    h('p', { class: 'hint' }, 'A complete copy you can restore from. Save it to Google Drive or email it to yourself. A shared backup arrives as a .txt file; Restore takes it as it is.'),
     h(
       'div',
       { class: 'actions' },
@@ -139,7 +143,7 @@ export async function dataView() {
           type: 'button',
           class: 'btn primary',
           onclick: async () => {
-            if (await shareFile(backupName(), await buildBackup(), 'application/json')) await markBackedUp();
+            if (await shareFile(sharedBackupName(), await buildBackup(), 'text/plain')) await markBackedUp();
           },
         }, 'Share backup'),
       h('button', {

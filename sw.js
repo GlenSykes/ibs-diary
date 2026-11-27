@@ -1,6 +1,6 @@
 // Service worker: makes the app work with no signal.
 // BUMP VERSION ON EVERY RELEASE, or phones keep the old copy.
-const VERSION = 'v2';
+const VERSION = 'v3';
 const CACHE = 'ibs-diary-' + VERSION;
 const FILES = [
   './',

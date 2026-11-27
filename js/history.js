@@ -15,6 +15,7 @@ export function summary(e) {
         ['Pain', e.pain],
         ['Bloating', e.bloating],
         ['Wind', e.wind],
+        ['Belching', e.belching],
       ]
         .filter(([, v]) => v > 0)
         .map(([k, v]) => `${k}: ${SEVERITY[v]}`);

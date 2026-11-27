@@ -162,15 +162,17 @@ function symptomsForm(entry) {
   const pain = choice(opts, entry?.pain ?? 0);
   const bloating = choice(opts, entry?.bloating ?? 0);
   const wind = choice(opts, entry?.wind ?? 0);
+  const belching = choice(opts, entry?.belching ?? 0);
   const body = h(
     'div',
     {},
     field('Tummy pain', pain.el),
     field('Bloating', bloating.el),
-    field('Wind', wind.el)
+    field('Wind', wind.el),
+    field('Belching', belching.el)
   );
   return shell('symptoms', entry, body, () => {
-    const v = { pain: pain.get(), bloating: bloating.get(), wind: wind.get() };
+    const v = { pain: pain.get(), bloating: bloating.get(), wind: wind.get(), belching: belching.get() };
     return v;
   });
 }

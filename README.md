@@ -56,6 +56,16 @@ ids (`seed-...`) so two devices would not duplicate them.
 Recipe ingredients are snapshotted into each food entry when it is logged, so
 editing a recipe later does not rewrite past meals.
 
+### Sync (optional)
+
+`js/sync.js` syncs to a small server you run yourself. It is off until a
+server address and device key are entered on the Data screen; the address is
+never written into this code. It syncs on opening the app, a few seconds after
+each save, and when the phone comes back online. The server hands out a cursor,
+so the phone never trusts its own clock to know what it has received. A
+successful sync counts as a backup for the home-screen reminder. The server is
+not part of this repo.
+
 ## Code
 
 Plain JavaScript modules, no build step, no dependencies.
@@ -69,6 +79,7 @@ Plain JavaScript modules, no build step, no dependencies.
 | `js/library.js`, `js/foodform.js` | library and recipe editing |
 | `js/history.js` | history and entry cards |
 | `js/export.js` | backup, restore, CSV, Data screen |
+| `js/sync.js` | optional NAS sync and its Data screen section |
 | `js/db.js` | storage (see above) |
 | `js/data.js` | categories, tags, scales. **Changing a key breaks saved data**; labels are safe |
 | `js/seed.js` | starter food library. **Never change an existing food's name-derived id** |

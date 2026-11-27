@@ -3,8 +3,9 @@
 import { h, toast, downloadFile, shareFile, canShareFiles, toLocalInput } from './ui.js';
 import { FODMAP_TAGS, OTHER_TAGS } from './data.js';
 import * as db from './db.js';
+import { syncSection, resendEverything } from './sync.js';
 
-export const APP_VERSION = '1.3.0';
+export const APP_VERSION = '1.4.0';
 const FODMAP_KEYS = new Set(FODMAP_TAGS.map((t) => t.key));
 const OTHER_KEYS = new Set(OTHER_TAGS.map((t) => t.key));
 const today = () => toLocalInput(Date.now()).slice(0, 10);
@@ -113,6 +114,7 @@ export async function dataView() {
         const data = JSON.parse(await file.text());
         if (data.app !== 'ibs-diary') throw new Error('not an IBS diary backup');
         const n = await db.merge(data);
+        if (n) await resendEverything(); // restored records may be older than the last sync
         toast(n ? `Restored ${n} records` : 'Nothing new in that backup');
         location.hash = '#/';
       } catch (e) {
@@ -156,6 +158,9 @@ export async function dataView() {
         },
       }, 'Download backup')
     ),
+
+    h('h2', {}, 'NAS sync'),
+    syncSection(),
 
     h('h2', {}, 'Export for analysis'),
     h('p', { class: 'hint' }, 'A spreadsheet file (CSV): one row per food or rating, with FODMAP tags. Open it in Excel or Google Sheets, or give it to Claude.'),

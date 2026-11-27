@@ -53,6 +53,10 @@ const req2p = (r) =>
     r.onerror = () => reject(r.error);
   });
 
+// Tells sync (js/sync.js) that something was saved here. merge() does not
+// fire it: records arriving from a sync or a restore are not new local edits.
+const changed = () => window.dispatchEvent(new Event('diary-changed'));
+
 export function newId() {
   if (crypto.randomUUID) return crypto.randomUUID();
   return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
@@ -85,6 +89,7 @@ export async function put(store, record) {
     deleted: false,
   };
   await tx(store, 'readwrite', (s) => s.put(rec));
+  changed();
   return rec;
 }
 
@@ -94,6 +99,7 @@ export async function remove(store, id) {
     const r = await req2p(s.get(id));
     if (r) s.put({ ...r, deleted: true, updatedAt: Date.now() });
   });
+  changed();
 }
 
 /** Entries in a time range [from, to), newest first. */

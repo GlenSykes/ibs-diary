@@ -8,6 +8,7 @@ import { historyView, entryCard } from './history.js';
 import { foodsView, foodEditView, recipesView, recipeEditView } from './library.js';
 import { dataView } from './export.js';
 import * as db from './db.js';
+import * as sync from './sync.js';
 
 const main = document.getElementById('main');
 const BACKUP_NAG_DAYS = 7;
@@ -15,15 +16,21 @@ const BACKUP_NAG_DAYS = 7;
 async function homeView() {
   const now = Date.now();
   const today = await db.entriesBetween(startOfDay(now), startOfDay(now) + 86400000);
-  const lastBackup = await db.getMeta('lastBackup');
+  // A successful NAS sync counts as a backup.
+  const lastBackup = Math.max((await db.getMeta('lastBackup')) || 0, (await db.getMeta('syncLast')) || 0) || null;
   const anyEntries = today.length || (await db.all('entries')).length;
   const stale = !lastBackup || now - lastBackup > BACKUP_NAG_DAYS * 86400000;
+  const s = await sync.state();
+  const syncBroken = s.url && s.key && s.error && (!s.lastSync || now - s.lastSync > 86400000);
 
   return h(
     'div',
     { class: 'view' },
     h('h1', { class: 'home-title' }, 'What happened?'),
-    anyEntries && stale
+    syncBroken
+      ? h('a', { class: 'banner', href: '#/data' }, 'NAS sync is not working. Tap for details.')
+      : null,
+    anyEntries && stale && !syncBroken
       ? h(
           'a',
           { class: 'banner', href: '#/data' },
@@ -129,6 +136,13 @@ async function start() {
   navigator.storage?.persist?.(); // silent on Android; granted readily once installed
   window.addEventListener('hashchange', route);
   await route();
+  // When a sync brings in changes from another phone, redraw list screens
+  // (never a form, which could hold an unsaved entry).
+  sync.onSync(({ changed }) => {
+    const path = location.hash.replace(/^#\/?/, '');
+    if (changed && /^(|history|data|library(\/foods|\/recipes)?)$/.test(path)) route();
+  });
+  sync.init();
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').then(watchForUpdates).catch(() => {});
   }

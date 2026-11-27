@@ -1,6 +1,6 @@
 // Service worker: makes the app work with no signal.
 // BUMP VERSION ON EVERY RELEASE, or phones keep the old copy.
-const VERSION = 'v6';
+const VERSION = 'v7';
 const CACHE = 'ibs-diary-' + VERSION;
 const FILES = [
   './',
@@ -17,6 +17,7 @@ const FILES = [
   './js/log.js',
   './js/picker.js',
   './js/seed.js',
+  './js/sync.js',
   './js/ui.js',
   './icons/icon.svg',
   './icons/icon-192.png',
@@ -49,6 +50,7 @@ self.addEventListener('message', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+  if (new URL(e.request.url).origin !== location.origin) return; // e.g. NAS sync: always the network
   e.respondWith(
     caches.match(e.request, { ignoreSearch: true }).then((hit) => hit || fetch(e.request))
   );

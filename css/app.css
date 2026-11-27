@@ -245,5 +245,10 @@ a { color: var(--primary); }
   min-height: 48px; border: 0; border-radius: 12px;
   background: var(--primary); color: var(--primary-text); font: inherit; font-weight: 600;
 }
+.notice {
+  margin: 8px 0; padding: 10px 12px; border-radius: 12px;
+  background: var(--warn-bg); color: var(--warn-text); font-size: 0.95rem;
+}
+.sync-box .field { margin: 12px 0; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 [hidden] { display: none !important; }

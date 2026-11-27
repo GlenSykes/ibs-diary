@@ -1,6 +1,6 @@
 // Service worker: makes the app work with no signal.
 // BUMP VERSION ON EVERY RELEASE, or phones keep the old copy.
-const VERSION = 'v3';
+const VERSION = 'v4';
 const CACHE = 'ibs-diary-' + VERSION;
 const FILES = [
   './',
@@ -23,8 +23,14 @@ const FILES = [
   './icons/icon-512.png',
 ];
 
+// cache: 'reload' goes to the network, skipping the browser's own HTTP cache.
+// Without it, GitHub Pages' max-age=600 lets a new version be stored with
+// files up to ten minutes old, and cache-first then serves them until the next
+// release. That is how 1.2.0 reached a phone without the belching question.
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)));
+  e.waitUntil(
+    caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: 'reload' }))))
+  );
 });
 
 self.addEventListener('activate', (e) => {

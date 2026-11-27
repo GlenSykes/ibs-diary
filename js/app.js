@@ -83,7 +83,14 @@ async function route() {
 // ---- updates: a new version waits until you tap, so nothing is lost mid-entry
 
 function watchForUpdates(reg) {
-  const offer = (worker) => {
+  // Tapping asks whichever version is waiting NOW, not the one that first
+  // raised the bar: if a second release lands before the tap, the first one is
+  // discarded and messaging it does nothing, which left the bar dead.
+  const apply = () => {
+    if (reg.waiting) reg.waiting.postMessage('skipWaiting');
+    else location.reload();
+  };
+  const offer = () => {
     if (document.querySelector('.update-bar')) return;
     document.body.append(
       h(
@@ -91,17 +98,17 @@ function watchForUpdates(reg) {
         {
           type: 'button',
           class: 'update-bar',
-          onclick: () => worker.postMessage('skipWaiting'),
+          onclick: apply,
         },
         'A new version is ready. Tap to update.'
       )
     );
   };
-  if (reg.waiting && navigator.serviceWorker.controller) offer(reg.waiting);
+  if (reg.waiting && navigator.serviceWorker.controller) offer();
   reg.addEventListener('updatefound', () => {
     const w = reg.installing;
     w?.addEventListener('statechange', () => {
-      if (w.state === 'installed' && navigator.serviceWorker.controller) offer(w);
+      if (w.state === 'installed' && navigator.serviceWorker.controller) offer();
     });
   });
   let reloading = false;

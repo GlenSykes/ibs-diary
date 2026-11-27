@@ -1,7 +1,7 @@
 // Entry cards (used on Home and History) and the History screen.
 
 import { h, fmtTime, fmtDay, startOfDay } from './ui.js';
-import { ENTRY_TYPES, SEVERITY, URGENCY, MOOD, STRESS, ENERGY, SLEEP_QUALITY, portionLabel } from './data.js';
+import { ENTRY_TYPES, SEVERITY, URGENCY, INCONTINENCE, MOOD, STRESS, ENERGY, SLEEP_QUALITY, portionLabel } from './data.js';
 import * as db from './db.js';
 
 export function summary(e) {
@@ -16,9 +16,10 @@ export function summary(e) {
         ['Bloating', e.bloating],
         ['Wind', e.wind],
         ['Belching', e.belching],
+        ['Incontinence', e.incontinence, INCONTINENCE],
       ]
         .filter(([, v]) => v > 0)
-        .map(([k, v]) => `${k}: ${SEVERITY[v]}`);
+        .map(([k, v, labels = SEVERITY]) => `${k}: ${labels[v]}`);
       return parts.length ? parts.join(' · ') : 'No symptoms';
     }
     case 'bowel':

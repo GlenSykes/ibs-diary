@@ -3,7 +3,7 @@
 
 import { h, choice, scale, field, timeField, toast } from './ui.js';
 import {
-  ENTRY_TYPES, PORTIONS, SEVERITY, URGENCY, MOOD, STRESS, ENERGY, SLEEP_QUALITY, BRISTOL,
+  ENTRY_TYPES, PORTIONS, SEVERITY, URGENCY, INCONTINENCE, MOOD, STRESS, ENERGY, SLEEP_QUALITY, BRISTOL,
 } from './data.js';
 import { openPicker } from './picker.js';
 import * as db from './db.js';
@@ -163,17 +163,24 @@ function symptomsForm(entry) {
   const bloating = choice(opts, entry?.bloating ?? 0);
   const wind = choice(opts, entry?.wind ?? 0);
   const belching = choice(opts, entry?.belching ?? 0);
+  const incontinence = choice(INCONTINENCE.map((label, i) => ({ value: i, label })), entry?.incontinence ?? 0);
   const body = h(
     'div',
     {},
     field('Tummy pain', pain.el),
     field('Bloating', bloating.el),
     field('Wind', wind.el),
-    field('Belching', belching.el)
+    field('Belching', belching.el),
+    field('Incontinence', incontinence.el)
   );
   return shell('symptoms', entry, body, () => {
-    const v = { pain: pain.get(), bloating: bloating.get(), wind: wind.get(), belching: belching.get() };
-    return v;
+    return {
+      pain: pain.get(),
+      bloating: bloating.get(),
+      wind: wind.get(),
+      belching: belching.get(),
+      incontinence: incontinence.get(),
+    };
   });
 }
 

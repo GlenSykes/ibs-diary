@@ -41,6 +41,7 @@ export const PORTIONS = [
 
 export const SEVERITY = ['None', 'Mild', 'Moderate', 'Severe']; // 0..3
 export const URGENCY = ['None', 'Some', 'Strong', 'Urgent']; // 0..3
+export const INCONTINENCE = ['None', 'Slight leak', 'Moderate leak', 'Full accident']; // 0..3
 
 // 1..5 scales (index 0 is the label for 1)
 export const MOOD = ['Very low', 'Low', 'OK', 'Good', 'Very good'];

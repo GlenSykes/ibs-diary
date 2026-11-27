@@ -4,7 +4,7 @@ import { h, toast, downloadFile, shareFile, canShareFiles, toLocalInput } from '
 import { FODMAP_TAGS, OTHER_TAGS } from './data.js';
 import * as db from './db.js';
 
-export const APP_VERSION = '1.2.2';
+export const APP_VERSION = '1.3.0';
 const FODMAP_KEYS = new Set(FODMAP_TAGS.map((t) => t.key));
 const OTHER_KEYS = new Set(OTHER_TAGS.map((t) => t.key));
 const today = () => toLocalInput(Date.now()).slice(0, 10);
@@ -57,7 +57,7 @@ export async function buildCsv() {
       }
     } else {
       const measures = {
-        symptoms: ['pain', 'bloating', 'wind', 'belching'],
+        symptoms: ['pain', 'bloating', 'wind', 'belching', 'incontinence'],
         bowel: ['bristol', 'urgency'],
         mood: ['mood', 'stress', 'energy'],
         sleep: ['hours', 'quality'],

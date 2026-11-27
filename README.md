@@ -11,7 +11,7 @@ added to the home screen, after which it runs offline like a normal app.
 | Entry | Fields |
 |---|---|
 | Food & drink | one or more library foods or recipes, each small / normal / large |
-| Symptoms | pain, bloating, wind, belching, each 0 to 3 (none, mild, moderate, severe) |
+| Symptoms | pain, bloating, wind, belching, each 0 to 3 (none, mild, moderate, severe); incontinence 0 to 3 (none, slight leak, moderate leak, full accident) |
 | Bowel movement | Bristol stool type 1 to 7, urgency 0 to 3 |
 | Mood & stress | mood, stress, energy, each 1 to 5 (any can be skipped) |
 | Sleep | hours, quality 1 to 5, time woken |

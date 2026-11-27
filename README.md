@@ -73,6 +73,23 @@ release**, and add any new file to its `FILES` list, or phones keep running the
 old copy. After a release the app shows "A new version is ready. Tap to
 update"; it never reloads by itself, so nothing is lost mid-entry.
 
+### Hosting
+
+The source lives in the private `GlenSykes/home` repo under `ibs-diary/`.
+GitHub Pages cannot serve a private repo on a free account, so a copy of this
+folder alone is pushed to the public repo `GlenSykes/ibs-diary`, which Pages
+serves at https://glensykes.github.io/ibs-diary/. Only the code is public;
+diary data never leaves the phone.
+
+To publish, commit in the home repo, then from its root:
+
+```bash
+git subtree push --prefix=ibs-diary https://github.com/GlenSykes/ibs-diary.git main
+```
+
+Pages rebuilds within a minute or two. Never edit the public repo directly,
+or the next push will be refused.
+
 ### Running locally
 
 ```bash

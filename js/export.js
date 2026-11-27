@@ -4,7 +4,7 @@ import { h, toast, downloadFile, shareFile, canShareFiles, toLocalInput } from '
 import { FODMAP_TAGS, OTHER_TAGS } from './data.js';
 import * as db from './db.js';
 
-export const APP_VERSION = '1.0.0';
+export const APP_VERSION = '1.1.0';
 const FODMAP_KEYS = new Set(FODMAP_TAGS.map((t) => t.key));
 const OTHER_KEYS = new Set(OTHER_TAGS.map((t) => t.key));
 const today = () => toLocalInput(Date.now()).slice(0, 10);

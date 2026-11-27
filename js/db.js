@@ -64,6 +64,11 @@ export async function all(store) {
   return rows.filter((r) => !r.deleted);
 }
 
+/** Every record, deleted ones included. */
+export async function rawAll(store) {
+  return tx(store, 'readonly', (s) => req2p(s.getAll()));
+}
+
 export async function get(store, id) {
   const r = await tx(store, 'readonly', (s) => req2p(s.get(id)));
   return r && !r.deleted ? r : undefined;

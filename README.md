@@ -22,6 +22,12 @@ Every entry's time can be changed, since IBS reactions often lag hours.
 foods in `js/seed.js`), and foods can be grouped into recipes. A food not in
 the library is added once, with its FODMAP tags, and is then selectable.
 
+Starter foods added to `js/seed.js` later reach phones already in use: the
+app checks the list on every start and adds only foods it has never stored.
+A food you edited or deleted keeps your version, and one whose name matches a
+food you added yourself is skipped. Foods added on the phone stay on the
+phone (and in backups); they do not flow back into `js/seed.js`.
+
 FODMAP tags in the starter library are **approximate**, from general low-FODMAP
 guidance at a normal serving. They are not Monash lab values; that data is
 licensed and must not be copied in.

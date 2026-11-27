@@ -1,4 +1,9 @@
-// Starter food library, loaded once on first run. Everything is editable in the app.
+// Starter food library. Everything is editable in the app.
+//
+// Checked on every start, so foods added to this list reach phones that are
+// already set up: an app update brings them in. A food is only ever added, never
+// changed: one you edited or deleted keeps your version (its id is already
+// stored), and one whose name matches a food you added yourself is skipped.
 //
 // FODMAP tags are APPROXIMATE, from general published low-FODMAP guidance at a
 // normal serving. They are not Monash lab values (that data is licensed). Many
@@ -8,7 +13,7 @@
 // Ids are fixed ("seed-..."), so if two devices ever sync, the starter foods
 // match up instead of appearing twice. Do not change an existing id.
 
-import { putRaw, getMeta, setMeta } from './db.js';
+import { merge, rawAll } from './db.js';
 
 // [name, category, 'space separated tags']
 const FOODS = [
@@ -240,8 +245,12 @@ export function seedRecords() {
   }));
 }
 
-export async function seedIfNeeded() {
-  if (await getMeta('seeded')) return;
-  await putRaw('foods', seedRecords());
-  await setMeta('seeded', Date.now());
+export async function syncSeedFoods() {
+  // rawAll includes deleted foods, so a deleted starter food is not brought back.
+  const stored = await rawAll('foods');
+  const ids = new Set(stored.map((f) => f.id));
+  const names = new Set(stored.filter((f) => !f.deleted).map((f) => f.name.toLowerCase()));
+  const missing = seedRecords().filter((f) => !ids.has(f.id) && !names.has(f.name.toLowerCase()));
+  if (missing.length) await merge({ foods: missing });
+  return missing.length;
 }

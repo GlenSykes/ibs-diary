@@ -2,7 +2,7 @@
 
 import { h, fmtDay, startOfDay } from './ui.js';
 import { ENTRY_TYPES } from './data.js';
-import { seedIfNeeded } from './seed.js';
+import { syncSeedFoods } from './seed.js';
 import { logView } from './log.js';
 import { historyView, entryCard } from './history.js';
 import { foodsView, foodEditView, recipesView, recipeEditView } from './library.js';
@@ -114,7 +114,7 @@ function watchForUpdates(reg) {
 
 async function start() {
   try {
-    await seedIfNeeded();
+    await syncSeedFoods();
   } catch (e) {
     main.replaceChildren(h('p', { class: 'empty' }, 'Could not open storage: ' + e.message));
     return;
